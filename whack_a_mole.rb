@@ -5,7 +5,9 @@ class WhackAMole < Gosu::Window
     super(800, 600)
     self.caption = "Whack a mole!"
 
-    @image = Gosu::Image.new("mole.png")
+    @mole = Gosu::Image.new("mole.png")
+    @hammer = Gosu::Image.new("hammer.png")
+
     @x = 200
     @y = 200
     @width  = 128
@@ -13,12 +15,26 @@ class WhackAMole < Gosu::Window
     @velocity_x = 4
     @velocity_y = 4
     @visible = 0
+    @hit = 0
   end
 
   def draw
     if @visible > 0
-      @image.draw(@x - @width / 2, @y - @height / 2, 1)
+      @mole.draw(@x - @width / 2, @y - @height / 2, 1)
     end
+
+    @hammer.draw(mouse_x - 40, mouse_y - 10, 1)
+    c = case @hit
+        when 0
+          Gosu::Color::NONE
+        when 1
+          Gosu::Color::GREEN
+        when -1
+          Gosu::Color::RED
+        end
+
+    draw_quad(0, 0, c, 800, 0, c, 800, 600, c, 0, 600, c)
+    @hit = 0
   end
 
   def update
@@ -28,6 +44,16 @@ class WhackAMole < Gosu::Window
     @velocity_y *= -1 if @y + @height / 2 > 600 || @y - @height / 2 < 0
     @visible -= 1
     @visible = 60 if @visible < -10 && rand < 0.01
+  end
+
+  def button_down(id)
+    if id == Gosu::MsLeft
+      if Gosu.distance(mouse_x, mouse_y, @x, @y) < 50 && @visible >= 0
+        @hit = 1
+      else
+        @hit = -1
+      end
+    end
   end
 end
 
