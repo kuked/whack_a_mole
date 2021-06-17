@@ -2,7 +2,10 @@ require "gosu"
 
 class WhackAMole < Gosu::Window
   def initialize
-    super(800, 600)
+    @screen_width  = 800
+    @screen_height = 600
+
+    super(@screen_width, @screen_height)
     self.caption = "Whack a mole!"
 
     @mole = Gosu::Image.new("mole.png")
@@ -33,15 +36,15 @@ class WhackAMole < Gosu::Window
           Gosu::Color::RED
         end
 
-    draw_quad(0, 0, c, 800, 0, c, 800, 600, c, 0, 600, c)
+    draw_quad(0, 0, c, @screen_width, 0, c, @screen_width, @screen_height, c, 0, @screen_height, c)
     @hit = 0
   end
 
   def update
     @x += @velocity_x
     @y += @velocity_y
-    @velocity_x *= -1 if @x + @width  / 2 > 800 || @x - @width  / 2 < 0
-    @velocity_y *= -1 if @y + @height / 2 > 600 || @y - @height / 2 < 0
+    @velocity_x *= -1 if @x + @width  / 2 > @screen_width  || @x - @width  / 2 < 0
+    @velocity_y *= -1 if @y + @height / 2 > @screen_height || @y - @height / 2 < 0
     @visible -= 1
     @visible = 60 if @visible < -10 && rand < 0.01
   end
